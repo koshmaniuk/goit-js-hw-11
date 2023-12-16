@@ -10,7 +10,16 @@ let page = 1;
 let item;
 btn.style.display = 'none';
 
-
+function errorMessage() {
+  Notiflix.Notify.success(
+    'Sorry, there are no images matching your search query. Please try again.',
+    {
+      timeout: 3000,
+      width: '400px',
+      fontSize: '24px',
+    }
+  );
+}
 
 // FORM CLICK
 function createMarkup(event) {
@@ -24,10 +33,9 @@ function createMarkup(event) {
         list.insertAdjacentHTML('beforeend', createImageMarkup(res.data.hits));
         page = 1
         } else {
+          errorMessage() 
           btn.style.display = 'none';
-          console.log(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
+          
       }
     })
     .catch(error => {
