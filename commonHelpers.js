@@ -1,18 +1,18 @@
-import{a as f}from"./assets/vendor-a61d8330.js";(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))t(e);new MutationObserver(e=>{for(const o of e)if(o.type==="childList")for(const a of o.addedNodes)a.tagName==="LINK"&&a.rel==="modulepreload"&&t(a)}).observe(document,{childList:!0,subtree:!0});function n(e){const o={};return e.integrity&&(o.integrity=e.integrity),e.referrerpolicy&&(o.referrerPolicy=e.referrerpolicy),e.crossorigin==="use-credentials"?o.credentials="include":e.crossorigin==="anonymous"?o.credentials="omit":o.credentials="same-origin",o}function t(e){if(e.ep)return;e.ep=!0;const o=n(e);fetch(e.href,o)}})();const p=document.querySelector(".search-form"),l=document.querySelector(".gallery"),c=document.querySelector(".load-more");let s=1;c.style.display="none";function m(i){s=1,i.preventDefault(),l.innerHTML="",c.style.display="none";const r=i.target.elements.searchQuery.value;d(r,s).then(t=>{t.data.hits.length!==0?(l.insertAdjacentHTML("beforeend",u(t.data.hits)),c.style.display="block",console.log(t),s=1):console.log("Sorry, there are no images matching your search query. Please try again.")}).catch(t=>{console.log("Error:",t)});function n(){s+=1,d(r,s).then(t=>{console.log(s),l.insertAdjacentHTML("beforeend",u(t.data.hits))}).catch(t=>{console.log("Error:",t)})}c.addEventListener("click",n)}p.addEventListener("submit",m);async function d(i,r){return await f.get(`https://pixabay.com/api/?key=41245265-a97abc6deb4aa48b974617d51&q=${i}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${r}`).then(n=>n).catch(n=>{throw new Error(n)})}function u(i){return i.map(({webformatURL:r,tags:n,likes:t,views:e,comments:o,downloads:a})=>`
+import{a as p}from"./assets/vendor-9cd2d6af.js";(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))c(e);new MutationObserver(e=>{for(const r of e)if(r.type==="childList")for(const s of r.addedNodes)s.tagName==="LINK"&&s.rel==="modulepreload"&&c(s)}).observe(document,{childList:!0,subtree:!0});function n(e){const r={};return e.integrity&&(r.integrity=e.integrity),e.referrerPolicy&&(r.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?r.credentials="include":e.crossOrigin==="anonymous"?r.credentials="omit":r.credentials="same-origin",r}function c(e){if(e.ep)return;e.ep=!0;const r=n(e);fetch(e.href,r)}})();const m=document.querySelector(".search-form"),l=document.querySelector(".gallery"),i=document.querySelector(".load-more");let a=1,d;i.style.display="none";function y(o){o.preventDefault(),d=o.target.elements.searchQuery.value,l.innerHTML="",u(d).then(t=>{t.data.hits.length!==0?(i.style.display="block",l.insertAdjacentHTML("beforeend",f(t.data.hits)),a=1):(i.style.display="none",console.log("Sorry, there are no images matching your search query. Please try again."))}).catch(t=>{console.log("Error:",t)})}m.addEventListener("submit",y);function h(){a+=1,console.log(a),u(d,a).then(o=>{const t=Math.ceil(o.data.totalHits/40);a>=t&&(console.log("We're sorry, but you've reached the end of search results."),i.style.display="none"),l.insertAdjacentHTML("beforeend",f(o.data.hits))}).catch(o=>{console.log("Error:",o)})}i.addEventListener("click",h);async function u(o,t){return await p.get(`https://pixabay.com/api/?key=41245265-a97abc6deb4aa48b974617d51&q=${o}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${t}`).then(n=>n).catch(n=>{throw new Error(n)})}function f(o){return o.map(({webformatURL:t,tags:n,likes:c,views:e,comments:r,downloads:s})=>`
     <div class="photo-card">
-        <img src="${r}" alt="${n}" class="picture"/>
-        <div class="info">
+    <img src="${t}" alt="${n}"loading="lazy" class="gallery__image"/>
+            <div class="info">
             <p class="info-item">
-            <b>Likes ${t}</b>
+            <b>Likes ${c}</b>
             </p>
             <p class="info-item">
             <b>Views ${e}</b>
             </p>
             <p class="info-item">
-            <b>Comments ${o}</b>
+            <b>Comments ${r}</b>
             </p>
             <p class="info-item">
-            <b>Downloads ${a}</b>
+            <b>Downloads ${s}</b>
             </p>
         </div>
     </div>
