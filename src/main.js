@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Toastify from 'toastify-js'
+import Toastify from 'toastify-js';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
@@ -11,25 +11,23 @@ let page = 1;
 let item;
 btn.style.display = 'none';
 
-
-
 function errorMessage() {
   Toastify({
-    text: "Sorry, there are no images matching your search query. Please try again.",
-    className: "info",
+    text: 'Sorry, there are no images matching your search query. Please try again.',
+    className: 'info',
     style: {
-      background: "linear-gradient(to right, #00b09b, #96c93d)",
-    }
+      background: 'linear-gradient(to right, #00b09b, #96c93d)',
+    },
   }).showToast();
 }
 
 function infoMessage() {
   Toastify({
     text: "We're sorry, but you've reached the end of search results.",
-    className: "info",
+    className: 'info',
     style: {
-      background: "linear-gradient(to right, #00b09b, #96c93d)",
-    }
+      background: 'linear-gradient(to right, #00b09b, #96c93d)',
+    },
   }).showToast();
 }
 
@@ -40,13 +38,17 @@ function createMarkup(event) {
   list.innerHTML = '';
   imageFinder(item)
     .then(res => {
-      if (res.data.hits.length !== 0 && item !== "" && item !== " ") {
+      if (res.data.hits.length !== 0 && item !== '' && item !== ' ') {
         btn.style.display = 'block';
         list.insertAdjacentHTML('beforeend', createImageMarkup(res.data.hits));
         page = 1;
+        let lightbox = new SimpleLightbox('.gallery__link', {
+          captionsData: 'alt',
+          captionDelay: 250,
+        });
       } else {
         btn.style.display = 'none';
-        errorMessage()        
+        errorMessage();
       }
     })
     .catch(error => {
@@ -59,14 +61,19 @@ form.addEventListener('submit', createMarkup);
 function onLoadMore() {
   page += 1;
   console.log(page);
+
   imageFinder(item, page)
     .then(res => {
       const pages = Math.ceil(res.data.totalHits / 40);
       if (page >= pages) {
-        infoMessage()
+        infoMessage();
         btn.style.display = 'none';
       }
       list.insertAdjacentHTML('beforeend', createImageMarkup(res.data.hits));
+      let lightbox = new SimpleLightbox('.gallery__link', {
+        captionsData: 'alt',
+        captionDelay: 250,
+      });
     })
     .catch(error => {
       console.log('Error:', error);
@@ -92,7 +99,15 @@ async function imageFinder(item, page) {
 function createImageMarkup(array) {
   return array
     .map(
-      ({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => `
     <div class="photo-card">
     <a class="gallery__link" href="${largeImageURL}">
     <img src="${webformatURL}" alt="${tags}"loading="lazy" class="gallery__image"/>
@@ -115,8 +130,4 @@ function createImageMarkup(array) {
     `
     )
     .join('');
-    let lightbox = new SimpleLightbox('.gallery__link', {
-      captionsData: 'alt',
-      captionDelay: 250,
-    });
 }
