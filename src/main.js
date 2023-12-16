@@ -1,31 +1,31 @@
 import axios from 'axios';
-// axios.defaults.headers.common['key'] =
-//   '41245265-a97abc6deb4aa48b974617d51&q=cat+flowers&image_type=photo';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
 
 const form = document.querySelector('.search-form');
 const list = document.querySelector('.gallery');
 const btn = document.querySelector('.load-more');
 
 let page = 1;
+let item;
 btn.style.display = 'none';
+
+
 
 // FORM CLICK
 function createMarkup(event) {
-  page = 1;
   event.preventDefault();
+  item = event.target.elements.searchQuery.value;
   list.innerHTML = '';
-  btn.style.display = 'none';
-  const item = event.target.elements.searchQuery.value;
-
-  imageFinder(item, page)
+    imageFinder(item)
     .then(res => {
       if (res.data.hits.length !== 0) {
-        list.insertAdjacentHTML('beforeend', createImageMarkup(res.data.hits));
         btn.style.display = 'block';
-        console.log(res);
+        list.insertAdjacentHTML('beforeend', createImageMarkup(res.data.hits));
         page = 1
-      } else {
-        console.log(
+        } else {
+          btn.style.display = 'none';
+          console.log(
           'Sorry, there are no images matching your search query. Please try again.'
         );
       }
@@ -33,23 +33,28 @@ function createMarkup(event) {
     .catch(error => {
       console.log('Error:', error);
     });
+}
+form.addEventListener('submit', createMarkup);
 
 // BUTTON CLICK
-  function onLoadMore() {
+ function onLoadMore()  {
     page += 1;
+    console.log(page);
     imageFinder(item, page)
       .then(res => {
-        console.log(page);
+        const pages = Math.ceil(res.data.totalHits / 40);
+        if(page >= pages) {
+          console.log("We're sorry, but you've reached the end of search results.");
+          btn.style.display = 'none';
+        }
         list.insertAdjacentHTML('beforeend', createImageMarkup(res.data.hits));
       })
       .catch(error => {
         console.log('Error:', error);
       });
   }
-  btn.addEventListener('click', onLoadMore);
-}
+btn.addEventListener('click', onLoadMore);
 
-form.addEventListener('submit', createMarkup);
 
 // IMAGE FINDER
 async function imageFinder(item, page) {
@@ -71,8 +76,8 @@ function createImageMarkup(array) {
     .map(
       ({ webformatURL, tags, likes, views, comments, downloads }) => `
     <div class="photo-card">
-        <img src="${webformatURL}" alt="${tags}" class="picture"/>
-        <div class="info">
+    <img src="${webformatURL}" alt="${tags}"loading="lazy" class="gallery__image"/>
+            <div class="info">
             <p class="info-item">
             <b>Likes ${likes}</b>
             </p>
@@ -90,4 +95,5 @@ function createImageMarkup(array) {
     `
     )
     .join('');
+    
 }
