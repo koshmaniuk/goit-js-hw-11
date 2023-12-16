@@ -31,18 +31,22 @@ function infoMessage() {
   }).showToast();
 }
 
+let gallery;
+
 // FORM CLICK
 function createMarkup(event) {
   event.preventDefault();
   item = event.target.elements.searchQuery.value;
   list.innerHTML = '';
+
   imageFinder(item)
     .then(res => {
       if (res.data.hits.length !== 0 && item !== '' && item !== ' ') {
         btn.style.display = 'block';
         list.insertAdjacentHTML('beforeend', createImageMarkup(res.data.hits));
         page = 1;
-        let lightbox = new SimpleLightbox('.gallery__link', {
+        
+        gallery = new SimpleLightbox('.gallery__link', {
           captionsData: 'alt',
           captionDelay: 250,
         });
@@ -61,7 +65,7 @@ form.addEventListener('submit', createMarkup);
 function onLoadMore() {
   page += 1;
   console.log(page);
-
+  
   imageFinder(item, page)
     .then(res => {
       const pages = Math.ceil(res.data.totalHits / 40);
@@ -70,10 +74,7 @@ function onLoadMore() {
         btn.style.display = 'none';
       }
       list.insertAdjacentHTML('beforeend', createImageMarkup(res.data.hits));
-      let lightbox = new SimpleLightbox('.gallery__link', {
-        captionsData: 'alt',
-        captionDelay: 250,
-      });
+      gallery.refresh();
     })
     .catch(error => {
       console.log('Error:', error);
